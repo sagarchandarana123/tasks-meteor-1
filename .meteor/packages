@@ -7,3 +7,4 @@ standard-app-packages
 accounts-base
 accounts-password
 accounts-ui
+iron-router
