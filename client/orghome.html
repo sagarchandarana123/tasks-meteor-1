@@ -1,8 +1,16 @@
 <template name="orghome">
+    <h2>Add a Board</h2>
+    <div class="inputWrapper">
+        <textarea name="text" class="inptext"></textarea>
+        <input id="addBoard" type="submit" value="Add">
+    </div>
+
+    <h2>Boards</h2>
     {{#each boards}}
         <div class="boardWrapper">
-            <h3>{{name}}</h3>
-            <h5>{{owner}}</h5>
+            <div>{{_id}}</div>
+            <h3><a class="boardSelect" href="#">{{name}}</a></h3>
+            <h5>{{owner owner_id}}</h5>
         </div>
     {{/each}}
 </template>
