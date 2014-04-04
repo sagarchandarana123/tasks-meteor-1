@@ -6,21 +6,59 @@
         {{> header}}
     </header>
     {{> content}}
+    
 </body>
 
 <template name="header">
     {{> loginButtons}}
-    <a id="home" href="#">Home</a>
+
 </template>
 
 <template name="content">
-    {{#if currentUser}}
-        {{#if currentPage "orghome"}}
-            {{> orghome}}
-        {{/if}}
+    {{> orghome}}
+</template>
 
-        {{#if currentPage "inboard"}}
-            {{> inboard}}
-        {{/if}}
-    {{/if}}
+<template name="orghome">
+    <h2>Add a Board</h2>
+    <div class="inputWrapper">
+        
+            <textarea  name="text" class="inptextBoard"></textarea>
+            <input id="addBoard" type="submit" value="Add">
+       
+    </div>
+
+    <h2>Boards</h2>
+    {{#each boards}}
+        <div class="boardWrapper">
+            <h3><a class="boardSelect" href="" id="{{_id}}">{{name}}</a></h3>
+            <h5>Created by: {{owner owner_id}}</h5>
+        </div>
+    {{/each}}
+
+    <hr>
+    <hr>
+
+    <h2>Selected Board: {{board.name}}</h2>
+
+    <h2><em>Members</em></h2> 
+    {{#each boardUsers}}
+         {{#each emails}}
+        <h5>{{address}}</h5>
+        {{/each}}
+    {{/each}}
+
+    <h2><em>Add a Card</em></h2>
+    <div class="inputWrapper">
+       
+            <textarea  name="text" class="inptextCard"></textarea>
+            <input id="addCard" type="submit" value="Add">
+        
+    </div>
+
+    <h2><em>Cards</em></h2>
+    {{#each cards}}
+        <div class="cardWrapper">
+            <p>{{name}} - created: {{owner owner_id}}</p>
+        </div>
+    {{/each}}
 </template>

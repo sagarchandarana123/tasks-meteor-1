@@ -30,13 +30,13 @@ Boards.allow({
 });
 
 Cards.allow({
-    insert: function(user_id, doc) {
-        var boards = Boards.find({members: user_id}).fetch();
-        var boardIds = [];
-        for(board in boards) {
-            boardIds.push(boards._id);
-        }
-
-        return doc.board in boardIds;
+   insert: function(user_id, doc) {
+        return doc.owner_id === user_id;
+    },
+    update: function(user_id, doc) {
+        return doc.owner_id === user_id;
+    },
+    remove : function(user_id, doc) {
+        return doc.owner_id === user_id;
     }
 });
