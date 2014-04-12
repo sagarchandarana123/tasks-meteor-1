@@ -12,9 +12,14 @@ gget = function(vari){
     return Session.get(vari);
 }
 
+getCurrentBoard = function(){
+    var board = Boards.find({_id:gget('b_id')}).fetch()[0];
+    return board;
+}
+
 Meteor.subscribe('boards');
 Meteor.subscribe('cards');
-
+Meteor.subscribe('users');
 
 Template.orghome.events({
     'click #addBoard': function(event, template) {
@@ -31,8 +36,26 @@ Template.orghome.events({
         }
     },
     'click .boardSelect': function(event, template) {
+
         sset('b_id',event.currentTarget.id);
-        console.log(gget('b_id'));
+
+    },
+
+    'click #shareWith': function(event, template){
+        //console.log(this)
+        Boards.update(
+            { _id: gget('b_id') },
+            { $addToSet: { members: this._id } }
+        )
+    },
+
+    'click #UnshareWith': function(event, template){
+
+        //console.log(this)
+        Boards.update(
+            { _id: gget('b_id') },
+            { $pull: { members: this._id } }
+        )
     },
 
     'click #addCard' : function(event,template){
@@ -44,7 +67,7 @@ Template.orghome.events({
         Cards.insert({
             board_id: gget('b_id'),
             owner_id: Meteor.user()._id,
-            name: cardName,
+            name: cardName
         });
 
         template.find('.inptextCard').value = ''
@@ -53,31 +76,48 @@ Template.orghome.events({
 });
 
 Template.orghome.helpers({
+    isLoggedIn:function(){
+        return Meteor.user()
+    },
     boards: function() {
-        console.log(Boards.find({name: { $ne: ''}}).fetch())
+
         return Boards.find({name: { $ne: ''}}).fetch();
 
     },
     board: function(){
         var board = Boards.find({_id:gget('b_id')}).fetch()[0];
-        sset('brd',board);
         return board;
     },
     owner: function(user_id) {
         return Meteor.users.find({_id: user_id}).fetch()[0].emails[0].address;
     },
     boardUsers: function(){
-         if(gget('board')){
-            var users = Meteor.users.find({_id: {$in: gget('board').members }}).fetch()
 
+         if(getCurrentBoard()){
+            var users = Meteor.users.find({_id: {$in: getCurrentBoard().members }}).fetch()
+            //console.log(users);
             return users;
         }
     },
+    getAddress:function(emails){
+        return emails[0].address;
+    },
+    showShareBtn:function(_id){
+        return getCurrentBoard() && _id && Meteor.user() && Meteor.user()._id != _id && getCurrentBoard().members.indexOf(_id) == -1 ;
+    },
+
+    showUnshareBtn:function(_id){
+        return getCurrentBoard() && _id && Meteor.user() && (Meteor.user()._id != _id && Meteor.user()._id == getCurrentBoard().owner_id) || ((Meteor.user()._id == _id && Meteor.user()._id != getCurrentBoard().owner_id));
+    },
+
+    users: function(){
+        return Meteor.users.find().fetch()
+    },
 
     cards: function() {
-        console.log(gget('b_id'));
+
         if(gget('b_id')){
             return Cards.find({board_id: gget('b_id')}).fetch();
         }
-    },
+    }
 });

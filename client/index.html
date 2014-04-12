@@ -19,46 +19,65 @@
 </template>
 
 <template name="orghome">
-    <h2>Add a Board</h2>
-    <div class="inputWrapper">
-        
-            <textarea  name="text" class="inptextBoard"></textarea>
-            <input id="addBoard" type="submit" value="Add">
-       
-    </div>
 
-    <h2>Boards</h2>
-    {{#each boards}}
-        <div class="boardWrapper">
-            <h3><a class="boardSelect" href="" id="{{_id}}">{{name}}</a></h3>
-            <h5>Created by: {{owner owner_id}}</h5>
+    <h2>People on Trello</h2>
+    {{#each users}}
+
+        <div>
+            {{getAddress emails}}
+            {{#if showShareBtn _id}}
+                <input id="shareWith" type="button" value="Add to current board" >
+            {{/if}}
         </div>
+
     {{/each}}
-
     <hr>
-    <hr>
+    {{#if isLoggedIn}}
+        <h2>Add a Board</h2>
+        <div class="inputWrapper">
 
-    <h2>Selected Board: {{board.name}}</h2>
+                <textarea  name="text" class="inptextBoard"></textarea>
+                <input id="addBoard" type="submit" value="Add">
 
-    <h2><em>Members</em></h2> 
-    {{#each boardUsers}}
-         {{#each emails}}
-        <h5>{{address}}</h5>
+        </div>
+
+        <h2>Boards</h2>
+        {{#each boards}}
+            <div class="boardWrapper">
+                <h3><a class="boardSelect" href="" id="{{_id}}">{{name}}</a></h3>
+                <h5>Created by: {{owner owner_id}}</h5>
+            </div>
         {{/each}}
-    {{/each}}
 
-    <h2><em>Add a Card</em></h2>
-    <div class="inputWrapper">
-       
-            <textarea  name="text" class="inptextCard"></textarea>
-            <input id="addCard" type="submit" value="Add">
-        
-    </div>
+        <hr>
+        <hr>
+        {{#if board}}
+            <h2>Selected Board: {{board.name}}</h2>
+            <h3>owner: {{owner board.owner_id}}</h3>
+            <h2><em>Members</em></h2>
+            {{#each boardUsers}}
+                <div>
+                {{getAddress emails}}
+                {{#if showUnshareBtn _id}}
+                    <input id="UnshareWith" type="button" value="Remove">
+                {{/if}}
+                </div>
+            {{/each}}
 
-    <h2><em>Cards</em></h2>
-    {{#each cards}}
-        <div class="cardWrapper">
-            <p>{{name}} - created: {{owner owner_id}}</p>
-        </div>
-    {{/each}}
+            <h2><em>Add a Card</em></h2>
+            <div class="inputWrapper">
+
+                    <textarea  name="text" class="inptextCard"></textarea>
+                    <input id="addCard" type="submit" value="Add">
+
+            </div>
+
+            <h2><em>Cards</em></h2>
+            {{#each cards}}
+                <div class="cardWrapper">
+                    <p>{{name}} - by: {{owner owner_id}}</p>
+                </div>
+            {{/each}}
+        {{/if}}
+    {{/if}}
 </template>

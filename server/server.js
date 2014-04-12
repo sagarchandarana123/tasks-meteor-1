@@ -8,6 +8,11 @@ Cards = new Meteor.Collection('cards');
 Meteor.publish('boards', function() {
     return Boards.find({members: this.userId});
 });
+
+Meteor.publish('users', function() {
+    return Meteor.users.find({},{fields: {emails: 1}}) ;
+});
+
 Meteor.publish('cards', function() {
     var boards = Boards.find({members: this.userId}).fetch();
     var boardIds = [];
@@ -22,7 +27,7 @@ Boards.allow({
         return doc.owner_id === user_id;
     },
     update: function(user_id, doc) {
-        return doc.owner_id === user_id;
+        return doc.owner_id === user_id || doc.members.indexOf(user_id) != -1;
     },
     remove : function(user_id, doc) {
         return doc.owner_id === user_id;
